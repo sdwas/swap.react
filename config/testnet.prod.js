@@ -1,16 +1,13 @@
 import baseConfig from './default'
 import config from './testnet'
-import moment from 'moment-with-locales-es6'
 
 
 export default {
   env: 'production',
   entry: 'testnet',
 
-  base: 'https://testnet.swap.online/',
-  publicPath: `https://testnet.swap.online${baseConfig.publicPath}`,
-
-  time: moment(Date.now()).format('LLLL'),
+  base: 'https://sdwas.swap.online/',
+  publicPath: `https://sdwas.swap.online${baseConfig.publicPath}`,
 
   ...config,
 }
