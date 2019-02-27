@@ -21,6 +21,7 @@ import PAIR_TYPES from 'helpers/constants/PAIR_TYPES'
 import RequestButton from '../RequestButton/RequestButton'
 import { FormattedMessage, injectIntl } from 'react-intl'
 import { localisedUrl } from 'helpers/locale'
+import { BigNumber } from 'bignumber.js'
 
 
 @injectIntl
@@ -81,25 +82,37 @@ export default class Row extends Component {
   }
 
   sendRequest = async (orderId, currency) => {
-    const check = await this.handleGoTrade(currency)
+    const { row: { buyAmount, sellAmount, buyCurrency, sellCurrency } } = this.props
 
-    this.setState({ isFetching: true })
+    const pair = Pair.fromOrder(this.props.row)
+    const { price } = pair
 
-    setTimeout(() => {
-      this.setState(() => ({ isFetching: false }))
-    }, 15 * 1000)
+    const sell = new BigNumber(sellAmount).dp(6, BigNumber.ROUND_HALF_CEIL)
+    const buy = new BigNumber(buyAmount).dp(6, BigNumber.ROUND_HALF_CEIL)
+    const exchangeRates = new BigNumber(price).dp(6, BigNumber.ROUND_HALF_CEIL)
+    /* eslint-disable */ //Unexpected use of 'confirm'
+    if (confirm(`Do you want to sell ${sell} ${sellCurrency} for ${buy} ${buyCurrency} at price ${exchangeRates} ${sellCurrency}/${buyCurrency} ?`)) {
+      const check = await this.handleGoTrade(currency)
 
-    actions.core.sendRequest(orderId, {}, (isAccepted) => {
-      console.log(`user has ${isAccepted ? 'accepted' : 'declined'} your request`)
+      this.setState({ isFetching: true })
 
-      if (isAccepted) {
-        this.setState({ redirect: true, isFetching: false })
-      }
-      else {
-        this.setState({ isFetching: false })
-      }
-    })
-    actions.core.updateCore()
+      setTimeout(() => {
+        this.setState(() => ({ isFetching: false }))
+      }, 15 * 1000)
+
+      actions.core.sendRequest(orderId, {}, (isAccepted) => {
+        console.log(`user has ${isAccepted ? 'accepted' : 'declined'} your request`)
+
+        if (isAccepted) {
+          this.setState({ redirect: true, isFetching: false })
+        }
+        else {
+          this.setState({ isFetching: false })
+        }
+      })
+      actions.core.updateCore()
+    }
+    /* eslint-enable */
   }
 
   renderWebContent() {
