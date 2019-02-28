@@ -91,7 +91,7 @@ export default class Row extends Component {
     const buy = new BigNumber(buyAmount).dp(6, BigNumber.ROUND_HALF_CEIL)
     const exchangeRates = new BigNumber(price).dp(6, BigNumber.ROUND_HALF_CEIL)
     /* eslint-disable */ //Unexpected use of 'confirm'
-    if (confirm(`Do you want to sell ${sell} ${sellCurrency} for ${buy} ${buyCurrency} at price ${exchangeRates} ${sellCurrency}/${buyCurrency} ?`)) {
+    if (confirm(`Do you want to swap ${sell} ${sellCurrency} for ${buy} ${buyCurrency} at price ${exchangeRates} ${sellCurrency}/${buyCurrency} ?`)) {
       const check = await this.handleGoTrade(currency)
 
       this.setState({ isFetching: true })
