@@ -31,6 +31,7 @@ const calculateTxSize = async ({ speed, unspents, address, txOut = 2, method = '
 
 const estimateFeeValue = async ({ feeRate, inSatoshis, speed, address, txSize, fixed, method } = {}) => {
   const DUST = 546
+  const xRate = 1.5 // HotFix for higher fees
   const { user: { btcData } } = getState()
 
   address = address || btcData.address
@@ -42,6 +43,7 @@ const estimateFeeValue = async ({ feeRate, inSatoshis, speed, address, txSize, f
     BigNumber(feeRate)
       .multipliedBy(txSize)
       .div(1024)
+      .multipliedBy(xRate)
       .dp(0, BigNumber.ROUND_HALF_EVEN),
   )
 
